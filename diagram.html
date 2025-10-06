@@ -186,11 +186,57 @@
         color: #c9a961;
         text-align: center;
       }
+      
+      /* Mobile zoom controls */
+      .mobile-controls {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        z-index: 1000;
+      }
+      
+      .zoom-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #1a1410 0%, #0f0d0a 100%);
+        border: 2px solid #c9a961;
+        color: #d4af37;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 4px 15px rgba(201, 169, 97, 0.3);
+        transition: all 0.3s ease;
+        user-select: none;
+      }
+      
+      .zoom-btn:hover, .zoom-btn:active {
+        background: linear-gradient(135deg, #2a2420 0%, #1f1d1a 100%);
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+        transform: scale(1.1);
+      }
+      
+      /* Make SVG container pannable */
+      #diagram {
+        touch-action: none;
+        user-select: none;
+      }
     }
     
     @media (min-width: 481px) {
       .mobile-instruction {
         display: none;
+      }
+    }
+    
+    @media (min-width: 769px) {
+      .mobile-controls {
+        display: none !important;
       }
     }
     
@@ -271,13 +317,20 @@
       <div id="info-content">
         <div class="placeholder">
           <div class="mobile-instruction">
-            📱 Tap characters and connections to explore relationships
+            📱 Tap characters and connections to explore relationships. Use pinch to zoom and drag to pan.
           </div>
           <p>Click on a character or family to see more information</p>
           <p style="margin-top: 10px;">Hover over or click the <strong>dashed lines</strong> between characters to see their relationships!</p>
         </div>
       </div>
     </div>
+  </div>
+  
+  <!-- Mobile zoom controls -->
+  <div class="mobile-controls">
+    <div class="zoom-btn" id="zoom-in" title="Zoom In">+</div>
+    <div class="zoom-btn" id="zoom-out" title="Zoom Out">−</div>
+    <div class="zoom-btn" id="reset-view" title="Reset View">⌂</div>
   </div>
 </main>
 <script>
@@ -385,11 +438,11 @@ const characterInfo = {
     occupation: "Former Mining Engineer & Investment Speculator",
     backstory: "Distant cousin, fallen on hard times. Intelligent and resourceful."
   },
-  "Vivienne Carroway": {
+  "Vivienne Blackwood Carroway": {
     type: "character",
-    family: "Carroway",
-    occupation: "Governess & Secret Blackmailer",
-    backstory: "Resourceful wife, scheming to save Maximilian. Devoted and clever."
+    family: "Blackwood",
+    occupation: "Philanthropist & Marriage Strategist",
+    backstory: "Born a Blackwood, married Maximilian Carroway to unite families. Devoted wife scheming to save husband from financial ruin. Resourceful and determined."
   },
   // Moreau Family
   "Francesca Moreau": {
@@ -440,14 +493,14 @@ const familyInfo = {
   "Blackwood Family": {
     type: "family",
     description: "Vain socialites consumed by jealousy and competition.",
-    members: ["Honoria", "Selene"],
-    reputation: "Beauty, rivalry, and obsession"
+    members: ["Honoria", "Selene", "Vivienne (married to Maximilian Carroway)"],
+    reputation: "Beauty, rivalry, and strategic marriages"
   },
   "Carroway Family": {
     type: "family",
     description: "Distant cousins fallen on hard times, desperate to restore their fortunes.",
-    members: ["Matthias", "Victoria"],
-    reputation: "Scheming for survival"
+    members: ["Maximilian (married to Vivienne Blackwood)", "Vivienne"],
+    reputation: "Strategic marriages and financial recovery"
   },
   "Moreau Family": {
     type: "family",
@@ -491,7 +544,7 @@ const nodes = [
   
   // Carroway Family (group 6)
   { id: "Maximilian Carroway", type: "character", family: "Carroway", group: 6 },
-  { id: "Vivienne Carroway", type: "character", family: "Carroway", group: 6 },
+  { id: "Vivienne Blackwood Carroway", type: "character", family: "Blackwood", group: 5 },
   { id: "Carroway Family", type: "family", family: "Carroway", group: 6 },
   
   // Moreau Family (group 7)
@@ -530,7 +583,8 @@ const links = [
   
   // Carroway Family connections
   { source: "Maximilian Carroway", target: "Carroway Family", type: "family" },
-  { source: "Vivienne Carroway", target: "Carroway Family", type: "family" },
+  { source: "Vivienne Blackwood Carroway", target: "Blackwood Family", type: "family" },
+  { source: "Vivienne Blackwood Carroway", target: "Carroway Family", type: "family" },
   
   // Moreau Family connections
   { source: "Francesca Moreau", target: "Moreau Family", type: "family" },
@@ -538,7 +592,6 @@ const links = [
   { source: "Anastasia Moreau", target: "Moreau Family", type: "family" },
   
   // Key relationship connections (based on clues and backstories)
-  { source: "Florence Vale", target: "Donovan Ashworth", type: "relationship", description: "Seen sneaking into the garden together" },
   { source: "Jasper Vale", target: "Cornelius Ravenscroft", type: "relationship", description: "Gambling debts owed to Cornelius" },
   { source: "Selene Blackwood", target: "Minerva Ravenscroft", type: "relationship", description: "Former companion, mysterious ending" },
   { source: "Francesca Moreau", target: "Bartholomew Ravenscroft", type: "relationship", description: "Supplier of remedies, frequent customer" },
@@ -548,17 +601,18 @@ const links = [
   { source: "Lavinia Ravenscroft", target: "Cornelius Ravenscroft", type: "relationship", description: "Married couple with hidden tensions" },
   { source: "Minerva Ravenscroft", target: "Lavinia Ravenscroft", type: "relationship", description: "Sisters, discussing Silas together" },
   { source: "Kerensa Vale", target: "Lavinia Ravenscroft", type: "relationship", description: "Childhood friends, now strained relationship" },
-  { source: "Vivienne Carroway", target: "Maximilian Carroway", type: "relationship", description: "Devoted wife scheming to save husband" },
+  { source: "Vivienne Blackwood Carroway", target: "Maximilian Carroway", type: "relationship", description: "Blackwood heiress married to unite families, devoted wife scheming to save husband" },
   { source: "Augustus Moreau", target: "Francesca Moreau", type: "relationship", description: "Husband overshadowed by cunning wife" },
   { source: "Maximilian Carroway", target: "Cornelius Ravenscroft", type: "relationship", description: "Mining venture partners, arguing over profits" },
   { source: "Algernon Whitcombe", target: "Cornelius Ravenscroft", type: "relationship", description: "Long-time friends, hunting party companions" },
-  { source: "Florence Vale", target: "Cornelius Ravenscroft", type: "relationship", description: "Attends annual hunting parties" },
+  { source: "Florence Vale", target: "Cornelius Ravenscroft", type: "relationship", description: "Spent late nights discussing strange topics." },
   { source: "Silas Ashworth", target: "Cornelius Ravenscroft", type: "relationship", description: "Specially invited by Cornelius for unknown reasons" },
   { source: "Nelle Whitcombe", target: "Lavinia Ravenscroft", type: "relationship", description: "Direct invitation from Lavinia, causing confusion" },
   { source: "Jasper Vale", target: "Bartholomew Ravenscroft", type: "relationship", description: "Frequent same gentleman's clubs" },
   { source: "Honoria Blackwood", target: "Cornelius Ravenscroft", type: "relationship", description: "Rumored past courtship before his marriage" },
   { source: "Augustus Moreau", target: "Cornelius Ravenscroft", type: "relationship", description: "Former tutor, dismissed after disagreement" },
   { source: "Anastasia Moreau", target: "Cornelius Ravenscroft", type: "relationship", description: "Visiting estate for mysterious research" },
+  { source: "Donovan Ashworth", target: "Blackwood Family", type: "relationship", description: "Served as protection for the Blackwood family on a business trip"},
   
   // New triangle connection: Digory, Maximilian, and Cornelius
   { source: "Digory Ashworth", target: "Maximilian Carroway", type: "relationship", description: "Secret business arrangement regarding mining investments" },
@@ -593,6 +647,19 @@ const width = dimensions.width;
 const height = dimensions.height;
 
 svg.attr("width", width).attr("height", height).attr("viewBox", `0 0 ${width} ${height}`);
+
+// Create zoom behavior for mobile panning
+const zoom = d3.zoom()
+  .scaleExtent([0.3, 3])
+  .on("zoom", function(event) {
+    container.attr("transform", event.transform);
+  });
+
+// Apply zoom behavior to SVG
+svg.call(zoom);
+
+// Create container group for all elements
+const container = svg.append("g");
 
 // Add arrowhead markers for directional relationships
 svg.append("defs").selectAll("marker")
@@ -632,7 +699,7 @@ const simulation = d3.forceSimulation(nodes)
   }).strength(0.15));
 
 // Create links with arrowheads for direction
-const link = svg.append("g")
+const link = container.append("g")
   .selectAll("line")
   .data(links)
   .enter().append("line")
@@ -681,7 +748,7 @@ const link = svg.append("g")
   });
 
 // Create nodes
-const node = svg.append("g")
+const node = container.append("g")
   .selectAll("circle")
   .data(nodes)
   .enter().append("circle")
@@ -701,7 +768,7 @@ const node = svg.append("g")
   });
 
 // Create labels
-const label = svg.append("g")
+const label = container.append("g")
   .selectAll("text")
   .data(nodes)
   .enter().append("text")
@@ -848,8 +915,50 @@ window.addEventListener('resize', function() {
     
     // Restart simulation with alpha for smooth transition
     simulation.alpha(0.3).restart();
+    
+    // Show/hide mobile controls based on screen size
+    const controls = document.querySelector('.mobile-controls');
+    if (controls) {
+      controls.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
+    }
   }, 250); // Debounce resize events
 });
+
+// Mobile zoom controls functionality
+if (window.innerWidth <= 768) {
+  document.getElementById('zoom-in').addEventListener('click', function() {
+    svg.transition().call(zoom.scaleBy, 1.5);
+  });
+  
+  document.getElementById('zoom-out').addEventListener('click', function() {
+    svg.transition().call(zoom.scaleBy, 0.67);
+  });
+  
+  document.getElementById('reset-view').addEventListener('click', function() {
+    svg.transition().call(zoom.transform, d3.zoomIdentity);
+  });
+  
+  // Add double-tap to zoom functionality
+  let lastTap = 0;
+  svg.on('touchend', function(event) {
+    const currentTime = new Date().getTime();
+    const tapLength = currentTime - lastTap;
+    if (tapLength < 500 && tapLength > 0) {
+      event.preventDefault();
+      // Double tap detected - zoom in
+      svg.transition().call(zoom.scaleBy, 1.5);
+    }
+    lastTap = currentTime;
+  });
+}
+
+// Hide mobile controls on desktop
+if (window.innerWidth > 768) {
+  const controls = document.querySelector('.mobile-controls');
+  if (controls) {
+    controls.style.display = 'none';
+  }
+}
 </script>
 </body>
 </html>
