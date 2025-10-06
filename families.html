@@ -1,0 +1,257 @@
+<!-- families.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Families</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .family-card {
+      background: linear-gradient(135deg, #1a1410 0%, #0f0d0a 100%);
+      color: #c9a961;
+      padding: 30px;
+      margin-bottom: 30px;
+      border: 2px solid #c9a961;
+      border-radius: 4px;
+      box-shadow: 0 4px 15px rgba(201, 169, 97, 0.3);
+      transition: all 0.3s ease;
+    }
+    .family-card:hover {
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.5);
+      transform: translateY(-2px);
+    }
+    .family-card h2 {
+      margin-top: 0;
+      border-bottom: 2px solid #c9a961;
+      padding-bottom: 10px;
+      color: #d4af37;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    }
+    .family-card p {
+      line-height: 1.6;
+    }
+    .members-list {
+      background: rgba(201, 169, 97, 0.1);
+      padding: 15px;
+      border: 1px solid #c9a961;
+      border-radius: 4px;
+      margin-top: 15px;
+    }
+    .members-list h3 {
+      margin-top: 0;
+      font-size: 1.1em;
+      color: #d4af37;
+    }
+    .members-list ul {
+      list-style: none;
+      padding: 0;
+    }
+    .members-list li {
+      padding: 5px 0;
+      border-bottom: 1px solid rgba(201, 169, 97, 0.3);
+    }
+    .members-list li:last-child {
+      border-bottom: none;
+    }
+    
+    /* Card-style navigation */
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 30px 0;
+      flex-wrap: wrap;
+    }
+    
+    nav a {
+      background: linear-gradient(135deg, #1a1410 0%, #0f0d0a 100%);
+      color: #c9a961;
+      text-decoration: none;
+      padding: 15px 25px;
+      border: 2px solid #c9a961;
+      border-radius: 8px;
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(201, 169, 97, 0.2);
+    }
+    
+    nav a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    nav a:hover::before {
+      left: 100%;
+    }
+    
+    nav a:hover {
+      color: #d4af37;
+      border-color: #d4af37;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    }
+    
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+      }
+      
+      nav a {
+        width: 200px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>The Families: Ravenscroft Masquerade Mystery</h1>
+  <p style="text-align: center; font-style: italic;">Seven families entangled in secrets at the Ravenscroft Estate</p>
+  <nav>
+    <a href="index.html">🏰 Home</a>
+    <a href="characters.html">🎭 Characters</a>
+    <a href="diagram.html">🕸️ Connections</a>
+  </nav>
+</header>
+<main>
+  <section class="family-card">
+    <h2>The Ravenscroft Family</h2>
+    <p><strong>Description:</strong> The central family, wealthy and feared, hosting the masquerade in their estate. The Ravenscrofts are obsessed with grandeur and reputation, but their wealth conceals dark secrets and mounting debts.</p>
+    <div class="members-list">
+      <h3>Family Members:</h3>
+      <ul>
+        <li><strong>Lavinia Ravenscroft</strong> - Elegant hostess with hidden affections</li>
+        <li><strong>Cornelius Ravenscroft</strong> - Stubborn patriarch with a fierce temper</li>
+        <li><strong>Bartholomew Ravenscroft</strong> - Reckless, charming, financially ruined</li>
+        <li><strong>Minerva Ravenscroft</strong> - Free-spirited sister who distrusts the family's rigidity</li>
+      </ul>
+    </div>
+    <div class="members-list" style="margin-top: 20px; background: rgba(212, 175, 55, 0.15);">
+      <h3>Family Connections:</h3>
+      <p style="margin: 10px 0;"><strong>With the Carroway Family:</strong> The families partnered on a mining venture that has recently declined due to economic issues and worker strikes. Maximilian and Cornelius have been seen arguing about the Carroways receiving less than their fair share of profits.</p>
+      <p style="margin: 10px 0;"><strong>With the Ashworth Family:</strong> The Ashworths attend annual hunting parties with Cornelius, also including Algernon and Florence. The last hunting party included Lavinia and went awry. Silas' invitation was specially ordered by Cornelius, though even the Ashworth family is unsure why.</p>
+      <p style="margin: 10px 0;"><strong>With the Whitcombe Family:</strong> Algernon and Cornelius share a friendship strengthened over many years. Nelle's direct invitation from Lavinia has cast confusion about the relationship. Nelle, Minerva, and Lavinia were seen discussing Silas.</p>
+      <p style="margin: 10px 0;"><strong>With the Vale Family:</strong> Lavinia had a fond childhood with Kerensa, however this fondness faded throughout the years. Cornelius and Florence remained close friends, and Cornelius had ties with Jasper related to Jasper's gambling adventures. </p>
+      <p style="margin: 10px 0;"><strong>With the Blackwood Family:</strong> The Blackwood family are distant cousins of Lavinia, however Lavinia's success had caused a recent strain in the relationships they shared. </p>
+      <p style="margin: 10px 0;"><strong>With the Moreau Family:</strong> Bartholomew was a frequent customer of Francesca's, indulging in the medicine that she provided. </p>
+    </div>
+  </section>
+
+  <section class="family-card">
+    <h2>The Whitcombe Family</h2>
+    <p><strong>Description:</strong> Ambitious and calculating, with ties to business and society scandals. The Whitcombes are known for their peculiar interests in alchemy and their talent for gathering secrets.</p>
+    <div class="members-list">
+      <h3>Family Members:</h3>
+      <ul>
+        <li><strong>Algernon Whitcombe</strong> - Odd, bookish alchemist with strange powders</li>
+        <li><strong>Nelle Whitcombe</strong> - Quiet but calculating gossip collector</li>
+      </ul>
+    </div>
+    <div class="members-list" style="margin-top: 20px; background: rgba(212, 175, 55, 0.15);">
+      <h3>Connections to the Ravencrofts:</h3>
+      <p style="margin: 10px 0;">Algernon and Cornelius have maintained a strong friendship over many years, attending hunting parties together. Nelle's arrival and direct invitation from Lavinia has caused some confusion about the nature of their relationship. The Whitcombe women were recently seen discussing Silas with Minerva and Lavinia.</p>
+    </div>
+  </section>
+
+  <section class="family-card">
+    <h2>The Vale Family</h2>
+    <p><strong>Description:</strong> Wealthy and proud, the Vales are protective of their reputation at all costs. Behind their refined exterior lie gambling debts, forgeries, and forbidden passions.</p>
+    <div class="members-list">
+      <h3>Family Members:</h3>
+      <ul>
+        <li><strong>Kerensa Vale</strong> - Proud wife, fiercely protective of reputation</li>
+        <li><strong>Jasper Vale</strong> - Charming gambler, hopelessly indebted</li>
+        <li><strong>Florence Vale</strong> - Dreamy and resentful, harboring secret love letters</li>
+      </ul>
+    </div>
+    <div class="members-list" style="margin-top: 20px; background: rgba(212, 175, 55, 0.15);">
+      <h3>Connections to the Ravencrofts:</h3>
+      <p style="margin: 10px 0;">The Vale family has long-standing financial entanglements with the Ravencrofts, with Jasper owing considerable gambling debts to Cornelius. Kerensa and Lavinia were childhood friends before Lavinia's marriage, though their relationship has become strained over the years. Florence is a frequent visitor to the Ravenscroft estate, often seen in the gardens. Jasper and Bartholomew frequent the same gentleman's clubs, where Bartholomew allegedly encourages Jasper's reckless habits. Florence attends the annual hunting parties. The Vale family's attendance at the masquerade was considered essential by Cornelius, though the reasons remain unclear.</p>
+    </div>
+  </section>
+
+  <section class="family-card">
+    <h2>The Ashworth Family</h2>
+    <p><strong>Description:</strong> A stern family with powerful ties and a reputation for ruthlessness. The Ashworths are entangled in debts, secrets, and dangerous knowledge brought from distant travels.</p>
+    <div class="members-list">
+      <h3>Family Members:</h3>
+      <ul>
+        <li><strong>Mortimer Ashworth</strong> - Stern patriarch with powerful connections</li>
+        <li><strong>Donovan Ashworth</strong> - Entitled, reckless son and wine thief</li>
+        <li><strong>Digory Ashworth</strong> - Idealistic son seeking recognition</li>
+        <li><strong>Silas Ashworth</strong> - World-weary uncle with dangerous secrets</li>
+      </ul>
+    </div>
+    <div class="members-list" style="margin-top: 20px; background: rgba(212, 175, 55, 0.15);">
+      <h3>Connections to the Ravencrofts:</h3>
+      <p style="margin: 10px 0;">The Ashworth family notably attends annual hunting parties with Cornelius, which also include Algernon and Florence Vale. The last hunting party included Lavinia and went awry under mysterious circumstances. Even the Ashworth family is unsure of Silas' involvement and why he was invited - reportedly, this invitation was on special order by Cornelius himself.</p>
+    </div>
+  </section>
+
+  <section class="family-card">
+    <h2>The Blackwood Family</h2>
+    <p><strong>Description:</strong> Vain socialites consumed by jealousy and competition. The Blackwood sisters are known for their beauty, their rivalry, and their obsession with the tragic figure of Basil.</p>
+    <div class="members-list">
+      <h3>Family Members:</h3>
+      <ul>
+        <li><strong>Honoria Blackwood</strong> - Vain socialite, jealous of Lavinia</li>
+        <li><strong>Selene Blackwood</strong> - Brooding sister, overshadowed and possessive</li>
+      </ul>
+    </div>
+    <div class="members-list" style="margin-top: 20px; background: rgba(212, 175, 55, 0.15);">
+      <h3>Connections to the Ravencrofts:</h3>
+      <p style="margin: 10px 0;">Honoria and Lavinia have been bitter social rivals since Lavinia's debut into society. The Blackwood family was once wealthier than the Ravencrofts, but recent reversals have shifted the balance of power. Selene briefly worked as a companion to Minerva before the arrangement ended under mysterious circumstances. There are whispered rumors that Cornelius once courted Honoria before choosing to marry into Lavinia's family for strategic reasons. The Blackwoods' invitation to the masquerade surprised many in society, given the public tension between the families.</p>
+    </div>
+  </section>
+
+  <section class="family-card">
+    <h2>The Carroway Family</h2>
+    <p><strong>Description:</strong> Distant cousins fallen on hard times, desperate to restore their fortunes. The Carroways are willing to scheme, beg, and destroy evidence to save themselves.</p>
+    <div class="members-list">
+      <h3>Family Members:</h3>
+      <ul>
+        <li><strong>Maximilian Carroway</strong> - Distant cousin, fallen on hard times</li>
+        <li><strong>Vivienne Carroway</strong> - Resourceful wife, scheming for survival</li>
+      </ul>
+    </div>
+    <div class="members-list" style="margin-top: 20px; background: rgba(212, 175, 55, 0.15);">
+      <h3>Connections to the Ravencrofts:</h3>
+      <p style="margin: 10px 0;">The Carroway family and the Ravenscroft family worked together on a special mining venture. Recent issues with the economy and worker strikes have resulted in a decline in profits from their joint venture. The Carroway family allegedly receives a less than equitable share of the profits, and Maximilian and Cornelius have been seen arguing heatedly about this matter.</p>
+    </div>
+  </section>
+
+  <section class="family-card">
+    <h2>The Moreau Family</h2>
+    <p><strong>Description:</strong> Mysterious and cunning, rumored to deal in potions and dark arts. The Moreaus possess dangerous knowledge, blackmail material, and a talent for manipulation.</p>
+    <div class="members-list">
+      <h3>Family Members:</h3>
+      <ul>
+        <li><strong>Francesca Moreau</strong> - Mysterious woman rumored to deal in poisons</li>
+        <li><strong>Augustus Moreau</strong> - Controlling scholar with blackmail ledgers</li>
+        <li><strong>Anastasia Moreau</strong> - Clever daughter, more observant than she seems</li>
+      </ul>
+    </div>
+    <div class="members-list" style="margin-top: 20px; background: rgba(212, 175, 55, 0.15);">
+      <h3>Connections to the Ravencrofts:</h3>
+      <p style="margin: 10px 0;">Francesca supplies various "remedies" and "tonics" to the Ravenscroft household, with Bartholomew being a frequent customer. Augustus served as a tutor to the younger Ravencrofts years ago, though he was dismissed after a disagreement with Cornelius. The Moreau family possesses certain knowledge about Ravenscroft family history that makes them both valuable and dangerous as allies. Anastasia has been seen at the Ravenscroft estate on several occasions prior to the party, supposedly conducting "research" for her father. Cornelius allegedly owes the Moreau family a significant favor from years past, which some speculate is why they received such a prominent invitation.</p>
+    </div>
+  </section>
+</main>
+</body>
+</html>

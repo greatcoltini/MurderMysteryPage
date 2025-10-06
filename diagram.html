@@ -1,0 +1,855 @@
+<!-- diagram.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Connections</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"/>
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <style>
+    .diagram-container {
+      display: flex;
+      gap: 20px;
+      align-items: flex-start;
+    }
+    
+    .info-panel {
+      width: 350px;
+      background: linear-gradient(135deg, #1a1410 0%, #0f0d0a 100%);
+      border: 2px solid #c9a961;
+      border-radius: 4px;
+      padding: 25px;
+      height: 800px;
+      overflow-y: auto;
+      box-shadow: 0 4px 15px rgba(201, 169, 97, 0.3);
+      flex-shrink: 0;
+    }
+    
+    .character-portrait {
+      width: 100%;
+      height: 200px;
+      background: rgba(201, 169, 97, 0.1);
+      border: 2px solid #c9a961;
+      border-radius: 4px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #8a7548;
+      font-style: italic;
+      overflow: hidden;
+    }
+    
+    .character-portrait img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .info-panel h3 {
+      margin-top: 0;
+      color: #d4af37;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+      font-size: 1.5em;
+      border-bottom: 1px solid #c9a961;
+      padding-bottom: 10px;
+    }
+    
+    .info-panel p {
+      color: #c9a961;
+      line-height: 1.6;
+    }
+    
+    .info-panel strong {
+      color: #d4af37;
+    }
+    
+    .info-panel .placeholder {
+      color: #8a7548;
+      font-style: italic;
+    }
+    
+    .connection-hint {
+      background: rgba(201, 169, 97, 0.1);
+      border-left: 4px solid #d4af37;
+      padding: 12px;
+      margin-top: 15px;
+      border-radius: 4px;
+      font-size: 0.9em;
+      color: #c9a961;
+    }
+    
+    .family-node {
+      stroke-width: 3px;
+      filter: drop-shadow(0 0 8px rgba(201, 169, 97, 0.4));
+    }
+    
+    .character-node {
+      stroke-width: 2px;
+      filter: drop-shadow(0 0 5px rgba(201, 169, 97, 0.3));
+    }
+    
+    .selected {
+      stroke: #d4af37 !important;
+      stroke-width: 5px !important;
+      filter: drop-shadow(0 0 12px rgba(212, 175, 55, 0.8)) !important;
+    }
+    
+    .info-panel::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    .info-panel::-webkit-scrollbar-track {
+      background: #0f0d0a;
+      border-radius: 4px;
+    }
+    
+    .info-panel::-webkit-scrollbar-thumb {
+      background: #c9a961;
+      border-radius: 4px;
+    }
+    
+    .info-panel::-webkit-scrollbar-thumb:hover {
+      background: #d4af37;
+    }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .diagram-container {
+        flex-direction: column;
+        gap: 15px;
+      }
+      
+      .info-panel {
+        width: 100%;
+        height: 400px;
+        order: 2;
+        padding: 20px;
+      }
+      
+      .character-portrait {
+        height: 150px;
+      }
+      
+      .info-panel h3 {
+        font-size: 1.3em;
+      }
+      
+      #diagram {
+        order: 1;
+        max-width: 100%;
+        height: auto;
+      }
+      
+      /* Hide connection hint on very small screens */
+      .connection-hint {
+        display: none;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .info-panel {
+        height: 300px;
+        padding: 15px;
+      }
+      
+      .character-portrait {
+        height: 120px;
+      }
+      
+      .info-panel h3 {
+        font-size: 1.2em;
+      }
+      
+      .info-panel p {
+        font-size: 0.9em;
+      }
+      
+      /* Improve touch targets */
+      circle {
+        cursor: pointer;
+      }
+      
+      /* Add mobile instruction */
+      .mobile-instruction {
+        display: block;
+        background: rgba(201, 169, 97, 0.1);
+        border: 1px solid #c9a961;
+        border-radius: 4px;
+        padding: 10px;
+        margin-bottom: 15px;
+        font-size: 0.85em;
+        color: #c9a961;
+        text-align: center;
+      }
+    }
+    
+    @media (min-width: 481px) {
+      .mobile-instruction {
+        display: none;
+      }
+    }
+    
+    /* Card-style navigation */
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 30px 0;
+      flex-wrap: wrap;
+    }
+    
+    nav a {
+      background: linear-gradient(135deg, #1a1410 0%, #0f0d0a 100%);
+      color: #c9a961;
+      text-decoration: none;
+      padding: 15px 25px;
+      border: 2px solid #c9a961;
+      border-radius: 8px;
+      font-family: 'Cinzel', serif;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(201, 169, 97, 0.2);
+    }
+    
+    nav a::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+      transition: left 0.5s ease;
+    }
+    
+    nav a:hover::before {
+      left: 100%;
+    }
+    
+    nav a:hover {
+      color: #d4af37;
+      border-color: #d4af37;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+    }
+    
+    @media (max-width: 768px) {
+      nav {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px;
+      }
+      
+      nav a {
+        width: 200px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+<header>
+  <h1>Connections: Ravenscroft Masquerade Mystery</h1>
+  <nav>
+    <a href="index.html">🏰 Home</a>
+    <a href="characters.html">🎭 Characters</a>
+    <a href="families.html">👑 Families</a>
+  </nav>
+</header>
+<main>
+  <div class="diagram-container">
+    <svg id="diagram"></svg>
+    <div class="info-panel">
+      <div id="info-content">
+        <div class="placeholder">
+          <div class="mobile-instruction">
+            📱 Tap characters and connections to explore relationships
+          </div>
+          <p>Click on a character or family to see more information</p>
+          <p style="margin-top: 10px;">Hover over or click the <strong>dashed lines</strong> between characters to see their relationships!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+// Character and family data with detailed information
+const characterInfo = {
+  // Ravenscroft Family
+  "Lavinia Ravenscroft": {
+    type: "character",
+    family: "Ravenscroft",
+    occupation: "Society Hostess & Patroness of the Arts",
+    backstory: "Elegant, ambitious, and gracious, Lavinia married into wealth but keeps her true affections hidden."
+  },
+  "Cornelius Ravenscroft": {
+    type: "character",
+    family: "Ravenscroft",
+    occupation: "Mining Magnate & Estate Owner",
+    backstory: "Stubborn patriarch, obsessed with family grandeur. Known for his temper but fiercely loyal."
+  },
+  "Bartholomew Ravenscroft": {
+    type: "character",
+    family: "Ravenscroft",
+    occupation: "Disgraced Horse Breeder & Gentleman of Leisure",
+    backstory: "Reckless and charming, financially ruined but maintains his warm humor. Relies on his brother's indulgence."
+  },
+  "Minerva Ravenscroft": {
+    type: "character",
+    family: "Ravenscroft",
+    occupation: "Poet & Women's Rights Advocate",
+    backstory: "Free-spirited and courageous sister to Lavinia, she distrusts Ravenscroft rigidity."
+  },
+  // Whitcombe Family
+  "Algernon Whitcombe": {
+    type: "character",
+    family: "Whitcombe",
+    occupation: "Alchemist & Chemical Researcher",
+    backstory: "Odd, bookish alchemist, respected but peculiar. Brilliant and surprisingly kind."
+  },
+  "Nelle Whitcombe": {
+    type: "character",
+    family: "Whitcombe",
+    occupation: "Society Columnist & Information Broker",
+    backstory: "Quiet but calculating, gathers gossip as currency. Sharp-witted and observant."
+  },
+  // Vale Family
+  "Kerensa Vale": {
+    type: "character",
+    family: "Vale",
+    occupation: "Textile Heiress & Philanthropist",
+    backstory: "Proud, wealthy wife, protective of her reputation. Dignified and charitable."
+  },
+  "Jasper Vale": {
+    type: "character",
+    family: "Vale",
+    occupation: "Professional Gambler & Failed Investor",
+    backstory: "Charming gambler, hopelessly indebted but genuinely likeable."
+  },
+  "Florence Vale": {
+    type: "character",
+    family: "Vale",
+    occupation: "Aspiring Painter & Art Dealer",
+    backstory: "Dreamy, resentful brother to Jasper. Talented and sensitive."
+  },
+  // Ashworth Family
+  "Donovan Ashworth": {
+    type: "character",
+    family: "Ashworth",
+    occupation: "Military Officer (on leave) & Duelist",
+    backstory: "Entitled, reckless son of Mortimer. Brave and honorable when it matters."
+  },
+  "Mortimer Ashworth": {
+    type: "character",
+    family: "Ashworth",
+    occupation: "Banking Executive & Political Advisor",
+    backstory: "Stern patriarch with powerful ties. Principled and strategic."
+  },
+  "Digory Ashworth": {
+    type: "character",
+    family: "Ashworth",
+    occupation: "Junior Barrister & Law Clerk",
+    backstory: "Idealistic son, desperate to be seen as capable. Passionate about justice."
+  },
+  "Silas Ashworth": {
+    type: "character",
+    family: "Ashworth",
+    occupation: "Explorer & Antiquities Collector",
+    backstory: "World-weary traveler, conceals dangerous knowledge. Wise and well-traveled."
+  },
+  // Blackwood Family
+  "Honoria Blackwood": {
+    type: "character",
+    family: "Blackwood",
+    occupation: "Fashion Designer & Society Belle",
+    backstory: "Vain socialite, jealous of Lavinia. Creative and fashion-forward."
+  },
+  "Selene Blackwood": {
+    type: "character",
+    family: "Blackwood",
+    occupation: "Spiritualist Medium & Occultist",
+    backstory: "Brooding, overshadowed sister of Honoria. Intuitive and empathetic."
+  },
+  // Carroway Family
+  "Maximilian Carroway": {
+    type: "character",
+    family: "Carroway",
+    occupation: "Former Mining Engineer & Investment Speculator",
+    backstory: "Distant cousin, fallen on hard times. Intelligent and resourceful."
+  },
+  "Vivienne Carroway": {
+    type: "character",
+    family: "Carroway",
+    occupation: "Governess & Secret Blackmailer",
+    backstory: "Resourceful wife, scheming to save Maximilian. Devoted and clever."
+  },
+  // Moreau Family
+  "Francesca Moreau": {
+    type: "character",
+    family: "Moreau",
+    occupation: "Apothecary & Herbalist",
+    backstory: "Mysterious, rumored to deal in potions. Knowledgeable and healing."
+  },
+  "Augustus Moreau": {
+    type: "character",
+    family: "Moreau",
+    occupation: "University Professor & Former Tutor",
+    backstory: "Controlling scholar, overshadowed by his wife's cunning. Dedicated and learned."
+  },
+  "Anastasia Moreau": {
+    type: "character",
+    family: "Moreau",
+    occupation: "Amateur Detective & Debutante",
+    backstory: "Clever daughter, more observant than she seems. Curious and insightful."
+  }
+};
+
+const familyInfo = {
+  "Ravenscroft Family": {
+    type: "family",
+    description: "The central family, wealthy and feared, hosting the masquerade in their estate.",
+    members: ["Lavinia", "Cornelius", "Bartholomew", "Minerva"],
+    reputation: "Old money with dark secrets"
+  },
+  "Whitcombe Family": {
+    type: "family",
+    description: "Ambitious and calculating, with ties to business and society scandals.",
+    members: ["Algernon", "Nelle"],
+    reputation: "Alchemists and gossip collectors"
+  },
+  "Vale Family": {
+    type: "family",
+    description: "Wealthy and proud, protective of their reputation at all costs.",
+    members: ["Katherina", "Jasper", "Florence"],
+    reputation: "Gambling debts and forbidden passions"
+  },
+  "Ashworth Family": {
+    type: "family",
+    description: "Stern family with powerful ties and a reputation for ruthlessness.",
+    members: ["Mortimer", "Donovan", "Digory", "Silas"],
+    reputation: "Powerful connections and dangerous secrets"
+  },
+  "Blackwood Family": {
+    type: "family",
+    description: "Vain socialites consumed by jealousy and competition.",
+    members: ["Honoria", "Selene"],
+    reputation: "Beauty, rivalry, and obsession"
+  },
+  "Carroway Family": {
+    type: "family",
+    description: "Distant cousins fallen on hard times, desperate to restore their fortunes.",
+    members: ["Matthias", "Victoria"],
+    reputation: "Scheming for survival"
+  },
+  "Moreau Family": {
+    type: "family",
+    description: "Mysterious and cunning, rumored to deal in potions and dark arts.",
+    members: ["Francesca", "Archibald", "Anastasia"],
+    reputation: "Dangerous knowledge and manipulation"
+  }
+};
+
+// Create nodes with family grouping information - all 22 characters + 7 families
+const nodes = [
+  // Ravenscroft Family (group 1)
+  { id: "Lavinia Ravenscroft", type: "character", family: "Ravenscroft", group: 1 },
+  { id: "Cornelius Ravenscroft", type: "character", family: "Ravenscroft", group: 1 },
+  { id: "Bartholomew Ravenscroft", type: "character", family: "Ravenscroft", group: 1 },
+  { id: "Minerva Ravenscroft", type: "character", family: "Ravenscroft", group: 1 },
+  { id: "Ravenscroft Family", type: "family", family: "Ravenscroft", group: 1 },
+  
+  // Whitcombe Family (group 2)
+  { id: "Algernon Whitcombe", type: "character", family: "Whitcombe", group: 2 },
+  { id: "Nelle Whitcombe", type: "character", family: "Whitcombe", group: 2 },
+  { id: "Whitcombe Family", type: "family", family: "Whitcombe", group: 2 },
+  
+  // Vale Family (group 3)
+  { id: "Kerensa Vale", type: "character", family: "Vale", group: 3 },
+  { id: "Jasper Vale", type: "character", family: "Vale", group: 3 },
+  { id: "Florence Vale", type: "character", family: "Vale", group: 3 },
+  { id: "Vale Family", type: "family", family: "Vale", group: 3 },
+  
+  // Ashworth Family (group 4)
+  { id: "Donovan Ashworth", type: "character", family: "Ashworth", group: 4 },
+  { id: "Mortimer Ashworth", type: "character", family: "Ashworth", group: 4 },
+  { id: "Digory Ashworth", type: "character", family: "Ashworth", group: 4 },
+  { id: "Silas Ashworth", type: "character", family: "Ashworth", group: 4 },
+  { id: "Ashworth Family", type: "family", family: "Ashworth", group: 4 },
+  
+  // Blackwood Family (group 5)
+  { id: "Honoria Blackwood", type: "character", family: "Blackwood", group: 5 },
+  { id: "Selene Blackwood", type: "character", family: "Blackwood", group: 5 },
+  { id: "Blackwood Family", type: "family", family: "Blackwood", group: 5 },
+  
+  // Carroway Family (group 6)
+  { id: "Maximilian Carroway", type: "character", family: "Carroway", group: 6 },
+  { id: "Vivienne Carroway", type: "character", family: "Carroway", group: 6 },
+  { id: "Carroway Family", type: "family", family: "Carroway", group: 6 },
+  
+  // Moreau Family (group 7)
+  { id: "Francesca Moreau", type: "character", family: "Moreau", group: 7 },
+  { id: "Augustus Moreau", type: "character", family: "Moreau", group: 7 },
+  { id: "Anastasia Moreau", type: "character", family: "Moreau", group: 7 },
+  { id: "Moreau Family", type: "family", family: "Moreau", group: 7 }
+];
+
+// Create links - family connections and key relationships
+const links = [
+  // Ravenscroft Family connections
+  { source: "Lavinia Ravenscroft", target: "Ravenscroft Family", type: "family" },
+  { source: "Cornelius Ravenscroft", target: "Ravenscroft Family", type: "family" },
+  { source: "Bartholomew Ravenscroft", target: "Ravenscroft Family", type: "family" },
+  { source: "Minerva Ravenscroft", target: "Ravenscroft Family", type: "family" },
+  
+  // Whitcombe Family connections
+  { source: "Algernon Whitcombe", target: "Whitcombe Family", type: "family" },
+  { source: "Nelle Whitcombe", target: "Whitcombe Family", type: "family" },
+  
+  // Vale Family connections
+  { source: "Kerensa Vale", target: "Vale Family", type: "family" },
+  { source: "Jasper Vale", target: "Vale Family", type: "family" },
+  { source: "Florence Vale", target: "Vale Family", type: "family" },
+  
+  // Ashworth Family connections
+  { source: "Donovan Ashworth", target: "Ashworth Family", type: "family" },
+  { source: "Mortimer Ashworth", target: "Ashworth Family", type: "family" },
+  { source: "Digory Ashworth", target: "Ashworth Family", type: "family" },
+  { source: "Silas Ashworth", target: "Ashworth Family", type: "family" },
+  
+  // Blackwood Family connections
+  { source: "Honoria Blackwood", target: "Blackwood Family", type: "family" },
+  { source: "Selene Blackwood", target: "Blackwood Family", type: "family" },
+  
+  // Carroway Family connections
+  { source: "Maximilian Carroway", target: "Carroway Family", type: "family" },
+  { source: "Vivienne Carroway", target: "Carroway Family", type: "family" },
+  
+  // Moreau Family connections
+  { source: "Francesca Moreau", target: "Moreau Family", type: "family" },
+  { source: "Augustus Moreau", target: "Moreau Family", type: "family" },
+  { source: "Anastasia Moreau", target: "Moreau Family", type: "family" },
+  
+  // Key relationship connections (based on clues and backstories)
+  { source: "Florence Vale", target: "Donovan Ashworth", type: "relationship", description: "Seen sneaking into the garden together" },
+  { source: "Jasper Vale", target: "Cornelius Ravenscroft", type: "relationship", description: "Gambling debts owed to Cornelius" },
+  { source: "Selene Blackwood", target: "Minerva Ravenscroft", type: "relationship", description: "Former companion, mysterious ending" },
+  { source: "Francesca Moreau", target: "Bartholomew Ravenscroft", type: "relationship", description: "Supplier of remedies, frequent customer" },
+  { source: "Mortimer Ashworth", target: "Cornelius Ravenscroft", type: "relationship", description: "Annual hunting party attendees" },
+  { source: "Nelle Whitcombe", target: "Silas Ashworth", type: "relationship", description: "Secret notes passed between them" },
+  { source: "Honoria Blackwood", target: "Lavinia Ravenscroft", type: "relationship", description: "Bitter social rivals since Lavinia's debut" },
+  { source: "Lavinia Ravenscroft", target: "Cornelius Ravenscroft", type: "relationship", description: "Married couple with hidden tensions" },
+  { source: "Minerva Ravenscroft", target: "Lavinia Ravenscroft", type: "relationship", description: "Sisters, discussing Silas together" },
+  { source: "Kerensa Vale", target: "Lavinia Ravenscroft", type: "relationship", description: "Childhood friends, now strained relationship" },
+  { source: "Vivienne Carroway", target: "Maximilian Carroway", type: "relationship", description: "Devoted wife scheming to save husband" },
+  { source: "Augustus Moreau", target: "Francesca Moreau", type: "relationship", description: "Husband overshadowed by cunning wife" },
+  { source: "Maximilian Carroway", target: "Cornelius Ravenscroft", type: "relationship", description: "Mining venture partners, arguing over profits" },
+  { source: "Algernon Whitcombe", target: "Cornelius Ravenscroft", type: "relationship", description: "Long-time friends, hunting party companions" },
+  { source: "Florence Vale", target: "Cornelius Ravenscroft", type: "relationship", description: "Attends annual hunting parties" },
+  { source: "Silas Ashworth", target: "Cornelius Ravenscroft", type: "relationship", description: "Specially invited by Cornelius for unknown reasons" },
+  { source: "Nelle Whitcombe", target: "Lavinia Ravenscroft", type: "relationship", description: "Direct invitation from Lavinia, causing confusion" },
+  { source: "Jasper Vale", target: "Bartholomew Ravenscroft", type: "relationship", description: "Frequent same gentleman's clubs" },
+  { source: "Honoria Blackwood", target: "Cornelius Ravenscroft", type: "relationship", description: "Rumored past courtship before his marriage" },
+  { source: "Augustus Moreau", target: "Cornelius Ravenscroft", type: "relationship", description: "Former tutor, dismissed after disagreement" },
+  { source: "Anastasia Moreau", target: "Cornelius Ravenscroft", type: "relationship", description: "Visiting estate for mysterious research" },
+  
+  // New triangle connection: Digory, Maximilian, and Cornelius
+  { source: "Digory Ashworth", target: "Maximilian Carroway", type: "relationship", description: "Secret business arrangement regarding mining investments" },
+  { source: "Digory Ashworth", target: "Cornelius Ravenscroft", type: "relationship", description: "Desperate to prove himself worthy of family mining empire" }
+];
+
+const svg = d3.select("#diagram");
+
+// Responsive dimensions
+function getResponsiveDimensions() {
+  const containerWidth = document.querySelector('.diagram-container').clientWidth;
+  const isMobile = window.innerWidth <= 768;
+  
+  if (isMobile) {
+    const availableWidth = Math.min(containerWidth, window.innerWidth - 20);
+    return {
+      width: availableWidth,
+      height: Math.min(600, window.innerHeight * 0.6)
+    };
+  } else {
+    const panelWidth = 350; // info panel width
+    const gap = 20; // container gap
+    return {
+      width: Math.max(650, containerWidth - panelWidth - gap),
+      height: 800
+    };
+  }
+}
+
+const dimensions = getResponsiveDimensions();
+const width = dimensions.width;
+const height = dimensions.height;
+
+svg.attr("width", width).attr("height", height).attr("viewBox", `0 0 ${width} ${height}`);
+
+// Add arrowhead markers for directional relationships
+svg.append("defs").selectAll("marker")
+  .data(["relationship", "family"])
+  .enter().append("marker")
+  .attr("id", d => `arrowhead-${d}`)
+  .attr("viewBox", "0 -5 10 10")
+  .attr("refX", 15)
+  .attr("refY", 0)
+  .attr("markerWidth", 6)
+  .attr("markerHeight", 6)
+  .attr("orient", "auto")
+  .append("path")
+  .attr("d", "M0,-5L10,0L0,5")
+  .attr("fill", d => d === "family" ? "#666" : "#c9a961")
+  .attr("opacity", d => d === "family" ? 0.6 : 0.8);
+
+// Color scale for different families (7 families) - Masquerade theme
+const colorScale = d3.scaleOrdinal()
+  .domain([1, 2, 3, 4, 5, 6, 7])
+  .range(["#d4af37", "#c9a961", "#b8860b", "#cd853f", "#daa520", "#b8956a", "#8b7355"]);
+
+// Create simulation with family grouping forces
+const simulation = d3.forceSimulation(nodes)
+  .force("link", d3.forceLink(links).id(d => d.id).distance(d => d.type === "family" ? 80 : 150))
+  .force("charge", d3.forceManyBody().strength(-400))
+  .force("center", d3.forceCenter(width / 2, height / 2))
+  .force("collision", d3.forceCollide().radius(d => d.type === "family" ? 40 : 35))
+  // Add force to group families together in a circular pattern
+  .force("x", d3.forceX().x(d => {
+    const angle = ((d.group - 1) / 7) * 2 * Math.PI;
+    return width / 2 + Math.cos(angle) * width * 0.3;
+  }).strength(0.15))
+  .force("y", d3.forceY().y(d => {
+    const angle = ((d.group - 1) / 7) * 2 * Math.PI;
+    return height / 2 + Math.sin(angle) * height * 0.3;
+  }).strength(0.15));
+
+// Create links with arrowheads for direction
+const link = svg.append("g")
+  .selectAll("line")
+  .data(links)
+  .enter().append("line")
+  .attr("stroke", d => d.type === "family" ? "#666" : "#c9a961")
+  .attr("stroke-width", d => d.type === "family" ? 2.5 : 3)
+  .attr("stroke-dasharray", d => d.type === "relationship" ? "8,4" : "none")
+  .attr("stroke-opacity", d => d.type === "family" ? 0.6 : 0.7)
+  .attr("marker-end", d => `url(#arrowhead-${d.type})`)
+  .style("cursor", d => d.description ? "pointer" : "default")
+  .style("stroke-linecap", "round")
+  .on("mouseover", function(event, d) {
+    if (d.description) {
+      d3.select(this)
+        .attr("stroke", "#d4af37")
+        .attr("stroke-width", 5)
+        .attr("stroke-opacity", 1)
+      
+      // Show tooltip
+      const infoContent = document.getElementById('info-content');
+      infoContent.innerHTML = `
+        <h3>Directional Connection</h3>
+        <p><strong>From:</strong> ${d.source.id || d.source}</p>
+        <p><strong>To:</strong> ${d.target.id || d.target}</p>
+        <p><strong>Relationship:</strong> ${d.description}</p>
+      `;
+    }
+  })
+  .on("mouseout", function(event, d) {
+    d3.select(this)
+      .attr("stroke", d.type === "family" ? "#666" : "#c9a961")
+      .attr("stroke-width", d.type === "family" ? 2.5 : 3)
+      .attr("stroke-opacity", d.type === "family" ? 0.6 : 0.7);
+  })
+  .on("click", function(event, d) {
+    if (d.description) {
+      event.stopPropagation();
+      const infoContent = document.getElementById('info-content');
+      infoContent.innerHTML = `
+        <h3>Connection Details</h3>
+        <p><strong>From:</strong> ${d.source.id || d.source}</p>
+        <p><strong>To:</strong> ${d.target.id || d.target}</p>
+        <p><strong>Type:</strong> ${d.type === "family" ? "Family Bond" : "Personal Relationship"}</p>
+        <p><strong>Description:</strong> ${d.description}</p>
+      `;
+    }
+  });
+
+// Create nodes
+const node = svg.append("g")
+  .selectAll("circle")
+  .data(nodes)
+  .enter().append("circle")
+  .attr("r", d => d.type === "family" ? 30 : 25)
+  .attr("fill", d => colorScale(d.group))
+  .attr("stroke", "#0a0a0a")
+  .attr("class", d => d.type === "family" ? "family-node" : "character-node")
+  .style("cursor", "pointer")
+  .call(drag(simulation))
+  .on("click", function(event, d) {
+    // Remove previous selection
+    svg.selectAll("circle").classed("selected", false);
+    // Add selection to clicked node
+    d3.select(this).classed("selected", true);
+    // Update info panel
+    updateInfoPanel(d);
+  });
+
+// Create labels
+const label = svg.append("g")
+  .selectAll("text")
+  .data(nodes)
+  .enter().append("text")
+  .attr("dy", ".35em")
+  .attr("text-anchor", "middle")
+  .attr("font-size", d => d.type === "family" ? "11px" : "10px")
+  .attr("font-weight", d => d.type === "family" ? "bold" : "600")
+  .style("pointer-events", "none")
+  .style("fill", "#d4af37")
+  .style("text-shadow", "0 0 8px rgba(10, 10, 10, 0.9), 0 0 3px rgba(10, 10, 10, 0.9)")
+  .text(d => {
+    // Wrap long names
+    if (d.id.length > 15) {
+      const words = d.id.split(' ');
+      return words.length > 1 ? words[0] + ' ' + words[words.length - 1] : d.id;
+    }
+    return d.id;
+  });
+
+// Update simulation on tick
+simulation.on("tick", () => {
+  link
+    .attr("x1", d => {
+      const dx = d.target.x - d.source.x;
+      const dy = d.target.y - d.source.y;
+      const dr = Math.sqrt(dx * dx + dy * dy);
+      const radius = d.source.type === "family" ? 40 : 35;
+      return d.source.x + (dx * radius / dr);
+    })
+    .attr("y1", d => {
+      const dx = d.target.x - d.source.x;
+      const dy = d.target.y - d.source.y;
+      const dr = Math.sqrt(dx * dx + dy * dy);
+      const radius = d.source.type === "family" ? 40 : 35;
+      return d.source.y + (dy * radius / dr);
+    })
+    .attr("x2", d => {
+      const dx = d.target.x - d.source.x;
+      const dy = d.target.y - d.source.y;
+      const dr = Math.sqrt(dx * dx + dy * dy);
+      const radius = d.target.type === "family" ? 40 : 35;
+      return d.target.x - (dx * radius / dr);
+    })
+    .attr("y2", d => {
+      const dx = d.target.x - d.source.x;
+      const dy = d.target.y - d.source.y;
+      const dr = Math.sqrt(dx * dx + dy * dy);
+      const radius = d.target.type === "family" ? 40 : 35;
+      return d.target.y - (dy * radius / dr);
+    });
+
+  node
+    .attr("cx", d => d.x)
+    .attr("cy", d => d.y);
+
+  label
+    .attr("x", d => d.x)
+    .attr("y", d => d.y);
+});
+
+// Function to update info panel
+function updateInfoPanel(nodeData) {
+  const infoContent = document.getElementById('info-content');
+  
+  if (nodeData.type === "character") {
+    const info = characterInfo[nodeData.id];
+    infoContent.innerHTML = `
+      <div class="character-portrait">
+        <span>Character Portrait</span>
+      </div>
+      <h3>${nodeData.id}</h3>
+      <p><strong>Family:</strong> ${info.family}</p>
+      <p><strong>Occupation:</strong> ${info.occupation}</p>
+      <p style="margin-top: 15px;"><strong>Backstory:</strong></p>
+      <p style="margin-left: 10px; font-style: italic;">${info.backstory}</p>
+    `;
+  } else if (nodeData.type === "family") {
+    const info = familyInfo[nodeData.id];
+    const membersList = info.members.map(m => `<li>${m}</li>`).join('');
+    infoContent.innerHTML = `
+      <h3>${nodeData.id}</h3>
+      <p style="margin-top: 15px;"><strong>Description:</strong></p>
+      <p style="margin-left: 10px; font-style: italic;">${info.description}</p>
+      <p style="margin-top: 15px;"><strong>Reputation:</strong></p>
+      <p style="margin-left: 10px; font-style: italic;">${info.reputation}</p>
+      <div style="background: rgba(201, 169, 97, 0.1); border: 1px solid #c9a961; padding: 15px; border-radius: 4px; margin-top: 15px;">
+        <strong style="color: #d4af37;">Members:</strong>
+        <ul style="margin: 10px 0; padding-left: 20px; font-size: 0.95em; color: #c9a961;">
+          ${membersList}
+        </ul>
+      </div>
+    `;
+  }
+}
+
+// Drag functionality
+function drag(simulation) {
+  function dragstarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+  }
+
+  function dragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
+  }
+
+  function dragended(event, d) {
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+  }
+
+  return d3.drag()
+    .on("start", dragstarted)
+    .on("drag", dragged)
+    .on("end", dragended);
+}
+
+// Add resize handler for responsive behavior
+let resizeTimeout;
+window.addEventListener('resize', function() {
+  clearTimeout(resizeTimeout);
+  resizeTimeout = setTimeout(function() {
+    const newDimensions = getResponsiveDimensions();
+    const newWidth = newDimensions.width;
+    const newHeight = newDimensions.height;
+    
+    // Update SVG dimensions
+    svg.attr("width", newWidth).attr("height", newHeight).attr("viewBox", `0 0 ${newWidth} ${newHeight}`);
+    
+    // Update simulation forces with new dimensions
+    simulation
+      .force("center", d3.forceCenter(newWidth / 2, newHeight / 2))
+      .force("x", d3.forceX().x(d => {
+        const angle = ((d.group - 1) / 7) * 2 * Math.PI;
+        return newWidth / 2 + Math.cos(angle) * newWidth * 0.3;
+      }).strength(0.15))
+      .force("y", d3.forceY().y(d => {
+        const angle = ((d.group - 1) / 7) * 2 * Math.PI;
+        return newHeight / 2 + Math.sin(angle) * newHeight * 0.3;
+      }).strength(0.15));
+    
+    // Restart simulation with alpha for smooth transition
+    simulation.alpha(0.3).restart();
+  }, 250); // Debounce resize events
+});
+</script>
+</body>
+</html>

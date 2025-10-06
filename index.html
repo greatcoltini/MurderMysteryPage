@@ -1,0 +1,202 @@
+
+<!-- index.html -->  <main>
+    <div class="hero-section">
+      <h2>Welcome to the Masquerade</h2>
+      <p class="hero-text">Step into the grand Ravenscroft estate for Lavinia's 30th birthday masquerade.<br>
+      Beneath the masks lie secrets, grudges, and deadly ambitions.</p>
+    </div>
+    
+    <div class="navigation-cards">
+      <div class="nav-card" onclick="window.location.href='characters.html'">
+        <div class="card-icon">🎭</div>
+        <h3>Characters</h3>
+        <p>Meet the 20 guests attending the masquerade ball. Each harbors secrets and desires that could lead to murder.</p>
+        <div class="card-hover-text">Explore the Cast →</div>
+      </div>
+      
+      <div class="nav-card" onclick="window.location.href='families.html'">
+        <div class="card-icon">👑</div>
+        <h3>Families</h3>
+        <p>Discover the seven influential families, their histories, reputations, and the grudges that divide them.</p>
+        <div class="card-hover-text">View Family Trees →</div>
+      </div>
+      
+      <div class="nav-card" onclick="window.location.href='diagram.html'">
+        <div class="card-icon">🕸️</div>
+        <h3>Connections</h3>
+        <p>Unravel the complex web of relationships, alliances, and betrayals that bind these characters together.</p>
+        <div class="card-hover-text">Explore Relationships →</div>
+      </div>
+    </div>
+    
+    <div class="mystery-teaser">
+      <p><em>"One of these guests will not survive the night..."</em></p>
+    </div>
+  </main>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Murder Mystery Masquerade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .hero-section {
+      text-align: center;
+      margin: 40px 0 60px 0;
+      padding: 0 20px;
+    }
+    
+    .hero-section h2 {
+      font-size: 2.5em;
+      margin-bottom: 20px;
+      color: #d4af37;
+      text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    
+    .hero-text {
+      font-size: 1.2em;
+      line-height: 1.6;
+      color: #c9a961;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .navigation-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 30px;
+      margin: 0 20px 60px 20px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    
+    .nav-card {
+      background: linear-gradient(135deg, #1a1410 0%, #0f0d0a 100%);
+      border: 2px solid #c9a961;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 6px 25px rgba(201, 169, 97, 0.2);
+    }
+    
+    .nav-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+      transition: left 0.6s ease;
+    }
+    
+    .nav-card:hover::before {
+      left: 100%;
+    }
+    
+    .nav-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      border-color: #d4af37;
+      box-shadow: 0 12px 40px rgba(212, 175, 55, 0.4);
+    }
+    
+    .card-icon {
+      font-size: 3em;
+      margin-bottom: 20px;
+      filter: grayscale(20%);
+      transition: all 0.3s ease;
+    }
+    
+    .nav-card:hover .card-icon {
+      transform: scale(1.1);
+      filter: grayscale(0%) drop-shadow(0 0 10px rgba(212, 175, 55, 0.5));
+    }
+    
+    .nav-card h3 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.8em;
+      color: #d4af37;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px rgba(212, 175, 55, 0.3);
+      transition: all 0.3s ease;
+    }
+    
+    .nav-card:hover h3 {
+      color: #f4d76b;
+      text-shadow: 0 0 15px rgba(244, 215, 107, 0.5);
+    }
+    
+    .nav-card p {
+      color: #c9a961;
+      line-height: 1.6;
+      margin-bottom: 20px;
+      transition: color 0.3s ease;
+    }
+    
+    .nav-card:hover p {
+      color: #d4af37;
+    }
+    
+    .card-hover-text {
+      color: #d4af37;
+      font-weight: 600;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+      font-family: 'Cinzel', serif;
+    }
+    
+    .nav-card:hover .card-hover-text {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    
+    .mystery-teaser {
+      text-align: center;
+      margin: 40px 0;
+      padding: 20px;
+    }
+    
+    .mystery-teaser p {
+      font-size: 1.3em;
+      color: #8a7548;
+      font-style: italic;
+      text-shadow: 0 0 8px rgba(138, 117, 72, 0.3);
+      animation: mysteryGlow 3s ease-in-out infinite alternate;
+    }
+    
+    @keyframes mysteryGlow {
+      from { text-shadow: 0 0 8px rgba(138, 117, 72, 0.3); }
+      to { text-shadow: 0 0 15px rgba(212, 175, 55, 0.5); }
+    }
+    
+    /* Mobile responsiveness */
+    @media (max-width: 768px) {
+      .navigation-cards {
+        grid-template-columns: 1fr;
+        margin: 0 10px 40px 10px;
+      }
+      
+      .nav-card {
+        padding: 25px;
+      }
+      
+      .hero-section h2 {
+        font-size: 2em;
+      }
+      
+      .hero-text {
+        font-size: 1.1em;
+      }
+    }
+  </style>
+</head>
+</html>
