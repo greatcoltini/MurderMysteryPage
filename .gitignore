@@ -1,2 +1,20 @@
 murder_scenario.ipynb
 character_info_private.txt
+
+# Ignore sensitive murder mystery files - keep solutions private!
+character-cards.html
+group-guide.html
+solution.html
+
+# Keep print instructions local
+print-instructions.md
+
+# Standard gitignore patterns
+.DS_Store
+Thumbs.db
+*.log
+node_modules/
+.env
+individual-cards.html
+github-setup.md
+print-cards.html
