@@ -603,7 +603,7 @@ const characterInfo = {
   "Digory Ashworth": {
     type: "character",
     family: "Ashworth",
-    occupation: "Junior Barrister & Law Clerk",
+    occupation: "Law Student in Study",
     backstory: "Idealistic son, desperate to be seen as capable. Passionate about justice."
   },
   "Silas Ashworth": {
@@ -616,14 +616,14 @@ const characterInfo = {
   "Honoria Blackwood": {
     type: "character",
     family: "Blackwood",
-    occupation: "Fashion Designer & Society Belle",
-    backstory: "Vain socialite, jealous of Lavinia. Creative and fashion-forward."
+    occupation: "Beauty Parlour Owner",
+    backstory: "Socialite, jealous of Lavinia. Creative and fashion-forward."
   },
   "Selene Blackwood": {
     type: "character",
     family: "Blackwood",
     occupation: "Spiritualist Medium & Occultist",
-    backstory: "Brooding, overshadowed sister of Honoria. Intuitive and empathetic."
+    backstory: "Mysterious and mystic sister of Honoria. Intuitive and empathetic."
   },
   // Carroway Family
   "Maximilian Carroway": {
@@ -649,12 +649,12 @@ const characterInfo = {
     type: "character",
     family: "Moreau",
     occupation: "University Professor & Former Tutor",
-    backstory: "Controlling scholar, overshadowed by his wife's cunning. Dedicated and learned."
+    backstory: "Intelligent scholar, concerned by his wife's dealings. Dedicated and learned."
   },
   "Anastasia Moreau": {
     type: "character",
     family: "Moreau",
-    occupation: "Amateur Detective & Debutante",
+    occupation: "Amateur Detective and Journalist",
     backstory: "Clever daughter, more observant than she seems. Curious and insightful."
   }
 };
@@ -793,12 +793,12 @@ const links = [
   { source: "Mortimer Ashworth", target: "Donovan Ashworth", type: "familial", description: "Father and son - Mortimer is stern patriarch, Donovan is entitled son" },
   { source: "Mortimer Ashworth", target: "Digory Ashworth", type: "familial", description: "Father and son - Digory is the idealistic younger son" },
   { source: "Mortimer Ashworth", target: "Silas Ashworth", type: "familial", description: "Brothers - Silas is Mortimer's world-weary brother" },
-  { source: "Honoria Blackwood", target: "Selene Blackwood", type: "familial", description: "Sisters - Honoria overshadows brooding Selene" },
+  { source: "Honoria Blackwood", target: "Selene Blackwood", type: "familial", description: "Sisters" },
   { source: "Jasper Vale", target: "Florence Vale", type: "familial", description: "Brothers - Florence resents charming gambler Jasper" },
-  { source: "Francesca Moreau", target: "Anastasia Moreau", type: "familial", description: "Mother and daughter - Anastasia inherited her mother's observant nature" },
+  { source: "Francesca Moreau", target: "Anastasia Moreau", type: "familial", description: "Mother and daughter - Anastasia uses her mother's connections for investigative access" },
   { source: "Algernon Whitcombe", target: "Nelle Whitcombe", type: "familial", description: "Brother and sister - Algernon is the bookish alchemist, Nelle the calculating gossip" },
-  { source: "Vivienne Blackwood Carroway", target: "Selene Blackwood", type: "familial", description: "Sisters - Vivienne married into Carroway family, Selene remained at home" },
-  { source: "Vivienne Blackwood Carroway", target: "Honoria Blackwood", type: "familial", description: "Sisters - Vivienne is youngest, Honoria the vain socialite" },
+  { source: "Vivienne Blackwood Carroway", target: "Selene Blackwood", type: "familial", description: "Sisters - Vivienne married into Carroway family, Selene is the oldest" },
+  { source: "Vivienne Blackwood Carroway", target: "Honoria Blackwood", type: "familial", description: "Sisters - Vivienne is youngest, Honoria is the middle child" },
   
   // Marriage relationships
   { source: "Lavinia Ravenscroft", target: "Cornelius Ravenscroft", type: "familial", description: "Husband and wife - married into wealth with hidden tensions" },
@@ -811,7 +811,7 @@ const links = [
   { source: "Selene Blackwood", target: "Minerva Ravenscroft", type: "relationship", description: "Former companion, mysterious ending" },
   { source: "Francesca Moreau", target: "Bartholomew Ravenscroft", type: "relationship", description: "Supplier of remedies, frequent customer" },
   { source: "Mortimer Ashworth", target: "Cornelius Ravenscroft", type: "relationship", description: "Annual hunting party attendees" },
-  { source: "Nelle Whitcombe", target: "Silas Ashworth", type: "relationship", description: "Secret notes passed between them" },
+  { source: "Nelle Whitcombe", target: "Anastasia Moreau", type: "relationship", description: "Secret notes passed between them" },
   { source: "Honoria Blackwood", target: "Lavinia Ravenscroft", type: "relationship", description: "Bitter social rivals since Lavinia's debut" },
 
   { source: "Karissa Vale", target: "Lavinia Ravenscroft", type: "relationship", description: "Childhood friends, now strained relationship" },
@@ -823,9 +823,9 @@ const links = [
   { source: "Silas Ashworth", target: "Cornelius Ravenscroft", type: "relationship", description: "Specially invited by Cornelius for unknown reasons" },
   { source: "Nelle Whitcombe", target: "Lavinia Ravenscroft", type: "relationship", description: "Direct invitation from Lavinia, causing confusion" },
   { source: "Jasper Vale", target: "Bartholomew Ravenscroft", type: "relationship", description: "Frequent same gentleman's clubs" },
-  { source: "Honoria Blackwood", target: "Cornelius Ravenscroft", type: "relationship", description: "Rumored past courtship before his marriage" },
+  { source: "Honoria Blackwood", target: "Lavinia Ravenscroft", type: "relationship", description: "These two have been seen spending a lot of time together" },
   { source: "Augustus Moreau", target: "Cornelius Ravenscroft", type: "relationship", description: "Former tutor, dismissed after disagreement" },
-  { source: "Anastasia Moreau", target: "Cornelius Ravenscroft", type: "relationship", description: "Visiting estate for mysterious research" },
+  { source: "Anastasia Moreau", target: "Cornelius Ravenscroft", type: "relationship", description: "Investigating his business practices for exposé article - he discovered her true motives" },
   { source: "Donovan Ashworth", target: "Blackwood Family", type: "relationship", description: "Served as protection for the Blackwood family on a business trip"},
 
   // New triangle connection: Digory, Maximilian, and Cornelius
